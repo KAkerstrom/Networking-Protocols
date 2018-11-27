@@ -16,8 +16,7 @@ const int MAXHOSTNAME = 200;
 const int MAXCONNECTIONS = 5;
 const int MAXRECV = 500;
 
-class Socket
-{
+class Socket {
  public:
   Socket();
   virtual ~Socket();

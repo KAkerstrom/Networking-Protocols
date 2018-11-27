@@ -39,6 +39,7 @@
 		<Unit filename="include/Socket.h" />
 		<Unit filename="include/SocketException.h" />
 		<Unit filename="src/ClientSocket.cpp" />
+		<Unit filename="src/Server.cpp" />
 		<Unit filename="src/ServerSocket.cpp" />
 		<Unit filename="src/Socket.cpp" />
 		<Unit filename="src/client.cpp" />
