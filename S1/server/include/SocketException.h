@@ -1,16 +1,18 @@
 // SocketException class
 
-#ifndef SOCKETEXCEPTION_H
-#define SOCKETEXCEPTION_H
+
+#ifndef SocketException_class
+#define SocketException_class
 
 #include <string>
 
-class SocketException {
+class SocketException
+{
  public:
-  SocketException(std::string s) : m_s(s) {}
-  ~SocketException() {}
+  SocketException ( std::string s ) : m_s ( s ) {};
+  ~SocketException (){};
 
-  std::string description() {return m_s;}
+  std::string description() { return m_s; }
 
  private:
 
@@ -18,4 +20,4 @@ class SocketException {
 
 };
 
-#endif //SOCKETEXCEPTION_H
+#endif

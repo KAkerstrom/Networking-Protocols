@@ -31,6 +31,12 @@
 		<Compiler>
 			<Add option="-Wall" />
 		</Compiler>
+		<Unit filename="include/ServerSocket.h" />
+		<Unit filename="include/Socket.h" />
+		<Unit filename="include/SocketException.h" />
+		<Unit filename="src/ServerSocket.cpp" />
+		<Unit filename="src/Socket.cpp" />
+		<Unit filename="src/server.cpp" />
 		<Extensions>
 			<code_completion />
 			<envvars />

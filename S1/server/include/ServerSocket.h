@@ -1,20 +1,25 @@
 // Definition of the ServerSocket class
 
-#ifndef SERVERSOCKET_H
-#define SERVERSOCKET_H
+#ifndef ServerSocket_class
+#define ServerSocket_class
 
 #include "Socket.h"
 
-class ServerSocket : private Socket {
+
+class ServerSocket : private Socket
+{
  public:
+
   ServerSocket(int port);
-  ServerSocket() {}
+  ServerSocket(){};
   virtual ~ServerSocket();
 
   const ServerSocket& operator << (const std::string&) const;
   const ServerSocket& operator >> (std::string&) const;
 
   void accept(ServerSocket&);
+
 };
 
-#endif //SERVERSOCKET_H
+
+#endif

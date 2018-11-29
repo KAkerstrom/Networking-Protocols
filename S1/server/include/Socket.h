@@ -1,7 +1,7 @@
 // Definition of the Socket class
 
-#ifndef SOCKET_CLASS_H
-#define SOCKET_CLASS_H
+#ifndef Socket_class
+#define Socket_class
 
 #include <string>
 #include <iostream>
@@ -15,32 +15,33 @@
 const int MAXHOSTNAME = 200;
 const int MAXCONNECTIONS = 5;
 const int MAXRECV = 500;
+ 
+class Socket
+{
+public:
+   Socket();
+   virtual ~Socket();
 
-class Socket {
- public:
-  Socket();
-  virtual ~Socket();
+   // Server initialization
+   bool create();
+   bool bind (const int port);
+   bool listen() const;
+   bool accept (Socket&) const;
 
-  // Server initialization
-  bool create();
-  bool bind (const int port);
-  bool listen() const;
-  bool accept (Socket&) const;
+   // Client initialization
+   bool connect (const std::string host, const int port);
 
-  // Client initialization
-  bool connect (const std::string host, const int port);
+   // Data Transimission
+   bool send (const std::string) const;
+   int recv (std::string&) const;
 
-  // Data Transmission
-  bool send (const std::string) const;
-  int recv (std::string&) const;
+   bool is_valid() const {
+      return m_sock != -1; }
 
-  bool is_valid() const {
-    return m_sock != -1;
-  }
-
- private:
-  int m_sock;
-  sockaddr_in m_addr;
+private:
+   int m_sock;
+   sockaddr_in m_addr;
 };
 
-#endif //SOCKET_CLASS_H
+
+#endif

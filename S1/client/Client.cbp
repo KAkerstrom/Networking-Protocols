@@ -32,11 +32,9 @@
 			<Add option="-Wall" />
 		</Compiler>
 		<Unit filename="include/ClientSocket.h" />
-		<Unit filename="include/ServerSocket.h" />
 		<Unit filename="include/Socket.h" />
 		<Unit filename="include/SocketException.h" />
 		<Unit filename="src/ClientSocket.cpp" />
-		<Unit filename="src/ServerSocket.cpp" />
 		<Unit filename="src/Socket.cpp" />
 		<Unit filename="src/client.cpp" />
 		<Extensions>
