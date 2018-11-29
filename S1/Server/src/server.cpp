@@ -1,13 +1,13 @@
 #include "ServerSocket.h"
 #include "SocketException.h"
 #include <string>
- 
-int main(int argc, int argv[])
+
+int main()
 {
-   std::cout << "running....\n";
+    std::cout << "running....\n";
    try{
       // Create the socket
-      ServerSocket server(30000);
+      ServerSocket server(3530);
 
       while (true){
 	 ServerSocket new_sock;

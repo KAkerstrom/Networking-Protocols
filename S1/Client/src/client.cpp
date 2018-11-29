@@ -8,7 +8,7 @@ int main()
    try{
       // Replace "localhost" with the hostname
       // that you're running your server.
-      ClientSocket client_socket("localhost", 30000);
+      ClientSocket client_socket("localhost", 3530);
       std::string reply;
       // Usually in real applications, the following
       // will be put into a loop.
@@ -26,4 +26,3 @@ int main()
 
    return 0;
 }
-
