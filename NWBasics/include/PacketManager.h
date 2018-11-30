@@ -7,12 +7,7 @@
 
 class PacketManager {
  public:
-  PacketManager();
-  virtual ~PacketManager();
-
-  std::vector<Packet> getPacketsFromFile(std::string filename);
-
- private:
+  static std::vector<Packet> getPacketsFromFile(std::string filename);
 };
 
 #endif // PACKETMANAGER_H

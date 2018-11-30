@@ -18,7 +18,7 @@ class Frame {
   /**
   * An enumeration of distinct frame types.
   */
-  enum FrameType {ACK, NAK, DATA};
+  enum FrameType : char {ACK, NAK, DATA};
 
   /**
   * Default Constructor.
@@ -33,26 +33,27 @@ class Frame {
   * @param seq: The sequence number.
   * @param source: The source address as a 4-bit char array.
   * @param dest: The destination address as a 4-bit char array.
-  */
-  Frame(std::string frameData, FrameType ft, char sequence, int source,
-  int dest);
-
-  /**
-  * Constructor.
-  * @param data: The Frame data.
-  * @param ft: The Frame Type.
-  * @param seq: The sequence number.
-  * @param source: The source address as a 4-bit char array.
-  * @param dest: The destination address as a 4-bit char array.
   * @param evenParityBit: The even-parity bit as a value of 0 or 1.
   */
-  Frame(std::string frameData, FrameType ft, char sequence, int source,
-  int dest, bool evenParity);
+  Frame(std::string frameData, FrameType ft, char sequence, bool evenParity);
 
   /**
   * Destructor.
   */
   virtual ~Frame() {}
+
+  /**
+  * Deserialize the frame.
+  * @param serial: The string to deserialize.
+  * @return Returns a Frame created with by the string.
+  */
+  static Frame deserialize(std::string serial);
+
+  /**
+  * Serializes the Frame.
+  * @return Returns the Frame as a string.
+  */
+  std::string serialize();
 
   /**
   * Checks whether the Frame's even parity bit matches the data.
@@ -97,22 +98,6 @@ class Frame {
   }
 
   /**
-  * Sets the source address.
-  * @param source: The source address.
-  */
-  void setSourceAddr(int source) {
-    sourceAddr = source;
-  }
-
-  /**
-  * Sets the destination address.
-  * @param dest: The destination address.
-  */
-  void setDestAddr(int dest) {
-    destAddr = dest;
-  }
-
-  /**
   * Gets the frame's data.
   * @return Returns the Frame's data.
   */
@@ -145,23 +130,18 @@ class Frame {
   }
 
   /**
-  * Gets the source address.
-  * @return Returns the source address.
+  * Output stream operator overload.
+  * @param os: The output stream.
+  * @param frame: The frame.
   */
-  int getSourceAddr() {
-    return sourceAddr;
-  }
+  friend std::ostream& operator<<(std::ostream& os, const Frame& frame);
 
-    /**
-  * Gets the destination address.
-  * @return Returns the destination address.
+  /**
+  * Input stream operator overload.
+  * @param is: The output stream.
+  * @param frame: The frame.
   */
-  int getDestAddr() {
-    return destAddr;
-  }
-
-  static Frame deserialize(std::string serial);
-  std::string serialize();
+  friend std::istream& operator>>(std::istream& is, const Frame& frame);
 
  private:
   /**

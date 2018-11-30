@@ -9,24 +9,13 @@
 Frame::Frame() {
   seq = -1;
   frameType = DATA;
-  sourceAddr = 0;
-  destAddr = 0;
   data = "";
   evenParityBit = false;
 }
 
-Frame::Frame(std::string frameData, FrameType ft, char sequence, int source,
-  int dest) : frameType{ft}, seq{sequence}, sourceAddr{source},
-  destAddr{dest} {
+Frame::Frame(std::string frameData, FrameType ft, char sequence, bool evenParity)
+  : frameType{ft}, seq{sequence}, evenParityBit{evenParity} {
   setData(frameData);
-  evenParityBit = calculateEvenParity();
-}
-
-Frame::Frame(std::string frameData, FrameType ft, char sequence, int source,
-  int dest, bool evenParity) : frameType{ft}, seq{sequence},
-  sourceAddr{source}, destAddr{dest}, evenParityBit{evenParity} {
-  setData(frameData);
-  evenParityBit = calculateEvenParity();
 }
 
 bool Frame::parityIsValid() {
@@ -49,89 +38,33 @@ void Frame::setData(std::string frameData) {
   data = frameData;
 }
 
-
 Frame Frame::deserialize(std::string serial) {
-  //    1 START_END_BYTE
-  //   32 SOURCE_ADDRESS
-  //   32 DEST_ADDRESS
-  //    1 CONTROL (2 bits FRAME_TYPE, 4 bits SEQ_NUM)
-  // <=64 DATA
-  //    1 EVEN_PARITY
-  //    1 START_END_BYTE
-
-  int charIndex = 0;
   Frame f;
-  //    1 START_END_BYTE
-  if (serial[charIndex++] != Frame::START_END_BYTE)
-    throw deserialization_error("Starting byte was not 0x7E as expected.");
+  if (serial.length() < 3)
+    throw deserialization_error("Serial string too short (<3 characters)");
 
-  //   32 SOURCE_ADDRESS
-  int addr = 0;
-  for (int i = 0; i < 4; i++) {
-    addr = addr | serial[charIndex++];
-    if (i < 3)
-      addr = addr << 8;
-  }
-  f.setSourceAddr(addr);
-
-  //   32 DEST_ADDRESS
-  addr = 0;
-  for (int i = 0; i < 4; i++) {
-    addr = addr | serial[charIndex++];
-    if (i < 3)
-      addr = addr << 8;
-  }
-  f.setDestAddr(addr);
-
-  //    1 CONTROL (2 bits FRAME_TYPE, 4 bits SEQ_NUM)
-  char c = serial[charIndex++];
-  // 2 bits FRAME_TYPE
-  f.setFrameType((Frame::FrameType)((c & 0xC0) >> 6));
-  // 4 bits SEQ_NUM
-  f.setSeq(c & 0x7F);
-
-  // Read until end of frame
-  // <=64 DATA
-  f.setData(serial.substr(charIndex, serial.length() - charIndex - 2));
+  f.setSeq(serial[0]);
+  f.setFrameType((Frame::FrameType)serial[1]);
+  f.setEvenParity(serial[2]);
+  f.setData(serial.substr(3));
   return f;
 }
 
 std::string Frame::serialize() {
-  //    1 START_END_BYTE
-  //   32 SOURCE_ADDRESS
-  //   32 DEST_ADDRESS
-  //    1 CONTROL (2 bits FRAME_TYPE, 4 bits SEQ_NUM)
-  // <=64 DATA
-  //    1 EVEN_PARITY
-  //    1 START_END_BYTE
-  ////////////////////////////////////////////////////////
-
   std::string chars;
-  //    1 START_END_BYTE
-  chars.push_back(Frame::START_END_BYTE);
-
-  //   32 SOURCE_ADDRESS
-  for (int i = 0; i < 4; i++)
-    chars.push_back(getSourceAddr() >> (i * 8));
-
-  //   32 DEST_ADDRESS
-  for (int i = 0; i < 4; i++)
-    chars.push_back(getDestAddr() >> (i * 8));
-
-  //    1 CONTROL (2 bits FRAME_TYPE, 4 bits SEQ_NUM)
-  char control = (char)getFrameType() << 6;
-  control |= getSeq();
-  chars.push_back(control);
-
-  // <=64 DATA
-  for (int i = 0; i < getData().length(); i++)
-    chars.push_back(getData()[i]);
-
-  //    1 EVEN_PARITY
+  chars.push_back(getSeq());
+  chars.push_back((char)getFrameType());
   chars.push_back(getEvenParity());
-
-  //    1 START_END_BYTE
-  chars.push_back(Frame::START_END_BYTE);
-
+  chars += getData();
   return chars;
+}
+
+std::ostream& operator<<(std::ostream& os, Frame& frame) {
+  os << frame.serialize();
+}
+
+std::istream& operator>>(std::istream& is, Frame& frame) {
+  std::string s;
+  is >> s;
+  frame = Frame::deserialize(s);
 }
