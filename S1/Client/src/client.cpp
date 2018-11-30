@@ -3,26 +3,40 @@
 #include <iostream>
 #include <string>
 
+// Send "message" to hostName at port
+std::string sendMsg(std::string message, std::string hostName, int port){
+  std::string reply;
+  try
+    {
+        ClientSocket client_socket(hostName, port);
+
+        try
+        {
+            client_socket << message;
+            client_socket >> reply;
+        }
+        catch(SocketException&)
+        {
+        }
+        reply = "We received this response from the server:\n\"" + reply + "\"\n";
+    }
+    catch(SocketException& e)
+    {
+        reply = "Exception was caught:" + e.description() + "\n";
+    }
+
+    return reply;
+}
+
 int main()
 {
-   try{
-      // Replace "localhost" with the hostname
-      // that you're running your server.
-      ClientSocket client_socket("localhost", 3530);
-      std::string reply;
-      // Usually in real applications, the following
-      // will be put into a loop.
-      try {
-	 client_socket << "Test message.";
-	 client_socket >> reply;
-      }
-      catch(SocketException&){
-      }
-      std::cout << "We received this response from the server:\n\"" << reply << "\"\n";;
-   }
-   catch(SocketException& e){
-      std::cout << "Exception was caught:" << e.description() << "\n";
-   }
+    std::string input;
+    std::string output;
+    std::cin >> input;
 
-   return 0;
+    output = sendMsg(input, "localhost", 3530);
+
+    std::cout << output;
+
+    return 0;
 }
