@@ -160,19 +160,8 @@ class Frame {
     return destAddr;
   }
 
-  /**
-  * Overload of >> operator.
-  * @param is: The input stream.
-  * @param f: The frame to output.
-  */
-  friend std::istream& operator<<(std::istream& is, Frame& f);
-
-  /**
-  * Overload of << operator.
-  * @param os: The output stream.
-  * @param f: The frame to output.
-  */
-  friend std::ostream& operator<<(std::ostream& os, Frame& f);
+  static Frame deserialize(std::string serial);
+  std::string serialize();
 
  private:
   /**

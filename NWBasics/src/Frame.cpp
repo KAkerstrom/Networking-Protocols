@@ -35,9 +35,9 @@ bool Frame::parityIsValid() {
 
 bool Frame::calculateEvenParity() {
   bool evenBits = false;
-  for(char c : data)
-    for(char i = 1; i < 8; i++)
-      if (c & (char)pow(2, i))
+  for(int i = 0; i < data.length(); i++)
+    for(char j = 1; j < 8; j++)
+      if (data[i] & (char)pow(2, j))
         evenBits = !evenBits;
 
   return !evenBits;
@@ -46,12 +46,11 @@ bool Frame::calculateEvenParity() {
 void Frame::setData(std::string frameData) {
   if (data.length() > MAX_DATA)
     throw data_exceeds_max_length_error("Frame data exceeds max data amount.");
-  data = data;
+  data = frameData;
 }
-/**
-* INCOMPLETE METHOD
-*/
-std::istream& operator>>(std::istream& is, Frame& f) {
+
+
+Frame Frame::deserialize(std::string serial) {
   //    1 START_END_BYTE
   //   32 SOURCE_ADDRESS
   //   32 DEST_ADDRESS
@@ -60,26 +59,26 @@ std::istream& operator>>(std::istream& is, Frame& f) {
   //    1 EVEN_PARITY
   //    1 START_END_BYTE
 
-  char c;
+  int charIndex = 0;
+  Frame f;
   //    1 START_END_BYTE
-  is >> c;
-  if (c & Frame::START_END_BYTE != Frame::START_END_BYTE)
+  if (serial[charIndex++] != Frame::START_END_BYTE)
     throw deserialization_error("Starting byte was not 0x7E as expected.");
 
   //   32 SOURCE_ADDRESS
   char* sourceAddr = new char[4];
   for (int i = 0; i < 4; i++)
-    is >> sourceAddr[i];
+    sourceAddr[i] = serial[charIndex++];
   f.setSourceAddr(sourceAddr);
 
   //   32 DEST_ADDRESS
   char* destAddr = new char[4];
   for (int i = 0; i < 4; i++)
-    is >> destAddr[i];
+    destAddr[i] = serial[charIndex++];
   f.setDestAddr(destAddr);
 
   //    1 CONTROL (2 bits FRAME_TYPE, 4 bits SEQ_NUM)
-  is >> c;
+  char c = serial[charIndex++];
   // 2 bits FRAME_TYPE
   f.setFrameType((Frame::FrameType)((c & 0xC0) >> 6));
   // 4 bits SEQ_NUM
@@ -88,19 +87,11 @@ std::istream& operator>>(std::istream& is, Frame& f) {
   // Read until end of frame
   // <=64 DATA
   c = -1;
-  std::vector<char> frameBytes;
-  int maxBytes = Frame::MAX_DATA + 1;
-  while(c != Frame::START_END_BYTE && maxBytes-- > 0) {
-    is >> c;
-    frameBytes.push_back(c);
-  }
-
+  f.setData(serial.substr(charIndex, serial.length() - charIndex - 2));
+  return f;
 }
 
-/**
-* INSERT BIT STUFFING
-*/
-std::ostream& operator<<(std::ostream& os, Frame& f) {
+std::string Frame::serialize() {
   //    1 START_END_BYTE
   //   32 SOURCE_ADDRESS
   //   32 DEST_ADDRESS
@@ -110,32 +101,32 @@ std::ostream& operator<<(std::ostream& os, Frame& f) {
   //    1 START_END_BYTE
   ////////////////////////////////////////////////////////
 
+  std::string chars;
   //    1 START_END_BYTE
-  os << Frame::START_END_BYTE;
+  chars.push_back(Frame::START_END_BYTE);
 
   //   32 SOURCE_ADDRESS
   for (int i = 0; i < 4; i++)
-    os << f.getSourceAddr()[i];
+    chars.push_back(getSourceAddr()[i]);
 
   //   32 DEST_ADDRESS
   for (int i = 0; i < 4; i++)
-    os << f.getDestAddr()[i];
+    chars.push_back(getDestAddr()[i]);
 
   //    1 CONTROL (2 bits FRAME_TYPE, 4 bits SEQ_NUM)
-  char control = (char)f.getFrameType() << 6;
-  control |= f.getSeq() << 2;
+  char control = (char)getFrameType() << 6;
+  control |= getSeq() << 2;
+  chars.push_back(control);
 
   // <=64 DATA
-  os << f.getData();
+  for (int i = 0; i < getData().length(); i++)
+    chars.push_back(getData()[i]);
 
   //    1 EVEN_PARITY
-  os << f.getEvenParity();
+  chars.push_back(getEvenParity());
 
   //    1 START_END_BYTE
-  os << Frame::START_END_BYTE;
+  chars.push_back(Frame::START_END_BYTE);
+
+  return chars;
 }
-
-
-
-
-
