@@ -35,9 +35,11 @@
 		</Compiler>
 		<Unit filename="include/Exceptions.h" />
 		<Unit filename="include/Frame.h" />
+		<Unit filename="include/IPAddress.h" />
 		<Unit filename="include/Packet.h" />
 		<Unit filename="include/PacketManager.h" />
 		<Unit filename="src/Frame.cpp" />
+		<Unit filename="src/IPAddress.cpp" />
 		<Unit filename="src/Packet.cpp" />
 		<Unit filename="src/PacketManager.cpp" />
 		<Unit filename="src/main.cpp" />

@@ -9,21 +9,21 @@
 Frame::Frame() {
   seq = -1;
   frameType = DATA;
-  sourceAddr = new char[4] {0, 0, 0, 0};
-  destAddr = new char[4] {0, 0, 0, 0};
+  sourceAddr = 0;
+  destAddr = 0;
   data = "";
   evenParityBit = false;
 }
 
-Frame::Frame(std::string frameData, FrameType ft, char sequence, char* source,
-  char* dest) : frameType{ft}, seq{sequence}, sourceAddr{source},
+Frame::Frame(std::string frameData, FrameType ft, char sequence, int source,
+  int dest) : frameType{ft}, seq{sequence}, sourceAddr{source},
   destAddr{dest} {
   setData(frameData);
   evenParityBit = calculateEvenParity();
 }
 
-Frame::Frame(std::string frameData, FrameType ft, char sequence, char* source,
-  char* dest, bool evenParity) : frameType{ft}, seq{sequence},
+Frame::Frame(std::string frameData, FrameType ft, char sequence, int source,
+  int dest, bool evenParity) : frameType{ft}, seq{sequence},
   sourceAddr{source}, destAddr{dest}, evenParityBit{evenParity} {
   setData(frameData);
   evenParityBit = calculateEvenParity();
@@ -66,27 +66,32 @@ Frame Frame::deserialize(std::string serial) {
     throw deserialization_error("Starting byte was not 0x7E as expected.");
 
   //   32 SOURCE_ADDRESS
-  char* sourceAddr = new char[4];
-  for (int i = 0; i < 4; i++)
-    sourceAddr[i] = serial[charIndex++];
-  f.setSourceAddr(sourceAddr);
+  int addr = 0;
+  for (int i = 0; i < 4; i++) {
+    addr = addr | serial[charIndex++];
+    if (i < 3)
+      addr = addr << 8;
+  }
+  f.setSourceAddr(addr);
 
   //   32 DEST_ADDRESS
-  char* destAddr = new char[4];
-  for (int i = 0; i < 4; i++)
-    destAddr[i] = serial[charIndex++];
-  f.setDestAddr(destAddr);
+  addr = 0;
+  for (int i = 0; i < 4; i++) {
+    addr = addr | serial[charIndex++];
+    if (i < 3)
+      addr = addr << 8;
+  }
+  f.setDestAddr(addr);
 
   //    1 CONTROL (2 bits FRAME_TYPE, 4 bits SEQ_NUM)
   char c = serial[charIndex++];
   // 2 bits FRAME_TYPE
   f.setFrameType((Frame::FrameType)((c & 0xC0) >> 6));
   // 4 bits SEQ_NUM
-  f.setSeq((c & 0x7E) >> 2);
+  f.setSeq(c & 0x7F);
 
   // Read until end of frame
   // <=64 DATA
-  c = -1;
   f.setData(serial.substr(charIndex, serial.length() - charIndex - 2));
   return f;
 }
@@ -107,15 +112,15 @@ std::string Frame::serialize() {
 
   //   32 SOURCE_ADDRESS
   for (int i = 0; i < 4; i++)
-    chars.push_back(getSourceAddr()[i]);
+    chars.push_back(getSourceAddr() >> (i * 8));
 
   //   32 DEST_ADDRESS
   for (int i = 0; i < 4; i++)
-    chars.push_back(getDestAddr()[i]);
+    chars.push_back(getDestAddr() >> (i * 8));
 
   //    1 CONTROL (2 bits FRAME_TYPE, 4 bits SEQ_NUM)
   char control = (char)getFrameType() << 6;
-  control |= getSeq() << 2;
+  control |= getSeq();
   chars.push_back(control);
 
   // <=64 DATA

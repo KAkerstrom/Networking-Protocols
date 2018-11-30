@@ -34,8 +34,8 @@ class Frame {
   * @param source: The source address as a 4-bit char array.
   * @param dest: The destination address as a 4-bit char array.
   */
-  Frame(std::string frameData, FrameType ft, char sequence, char* source,
-  char* dest);
+  Frame(std::string frameData, FrameType ft, char sequence, int source,
+  int dest);
 
   /**
   * Constructor.
@@ -46,8 +46,8 @@ class Frame {
   * @param dest: The destination address as a 4-bit char array.
   * @param evenParityBit: The even-parity bit as a value of 0 or 1.
   */
-  Frame(std::string frameData, FrameType ft, char sequence, char* source,
-  char* dest, bool evenParity);
+  Frame(std::string frameData, FrameType ft, char sequence, int source,
+  int dest, bool evenParity);
 
   /**
   * Destructor.
@@ -100,7 +100,7 @@ class Frame {
   * Sets the source address.
   * @param source: The source address.
   */
-  void setSourceAddr(char* source) {
+  void setSourceAddr(int source) {
     sourceAddr = source;
   }
 
@@ -108,7 +108,7 @@ class Frame {
   * Sets the destination address.
   * @param dest: The destination address.
   */
-  void setDestAddr(char* dest) {
+  void setDestAddr(int dest) {
     destAddr = dest;
   }
 
@@ -148,7 +148,7 @@ class Frame {
   * Gets the source address.
   * @return Returns the source address.
   */
-  char* getSourceAddr() {
+  int getSourceAddr() {
     return sourceAddr;
   }
 
@@ -156,7 +156,7 @@ class Frame {
   * Gets the destination address.
   * @return Returns the destination address.
   */
-  char* getDestAddr() {
+  int getDestAddr() {
     return destAddr;
   }
 
@@ -182,12 +182,12 @@ class Frame {
   /**
   * Source address.
   */
-  char* sourceAddr;
+  int sourceAddr;
 
   /**
   * Destination address.
   */
-  char* destAddr;
+  int destAddr;
 
   /**
   * The frame's data.
