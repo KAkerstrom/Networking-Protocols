@@ -7,29 +7,12 @@
 
 class Packet {
  public:
-   class PacketBuilder;
-
-  /**
-  * Default constructor.
-  */
-  Packet();
-
-  /**
-  * Constructor.
-  * @param data: The packet data.
-  */
-  Packet(std::string data);
+  class PacketBuilder;
 
   /**
   * Destructor.
   */
   virtual ~Packet() {}
-
-  /**
-  * Sets the packet data.
-  * @param pData: The packet data.
-  */
-  void setData(std::string pData);
 
   /**
   * Gets the packet data.
@@ -44,6 +27,12 @@ class Packet {
   std::vector<Frame> getFrames();
 
  private:
+  /**
+  * Constructor.
+  * @param data: The packet data.
+  */
+  Packet(std::vector<Frame> packetFrames);
+
   /**
   * The frames holding the packet data.
   */

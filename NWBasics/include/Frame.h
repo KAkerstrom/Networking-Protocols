@@ -37,6 +37,12 @@ class Frame {
   */
   Frame(std::string frameData, FrameType ft, char sequence, bool evenParity);
 
+    /**
+  * Constructor.
+  * @param data: The Frame data.
+  */
+  Frame(std::string frameData);
+
   /**
   * Destructor.
   */
@@ -127,6 +133,15 @@ class Frame {
   */
   bool getEvenParity() {
     return evenParityBit;
+  }
+
+  /**
+  * Get whether the frame contains a newline character,
+  * indicating the end of the line.
+  * @return Returns whether the frame contains a newline.
+  */
+  bool containsNewLine() {
+    return (data.find('\n') != std::string::npos);
   }
 
   /**

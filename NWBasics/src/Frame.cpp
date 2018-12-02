@@ -13,6 +13,13 @@ Frame::Frame() {
   evenParityBit = false;
 }
 
+Frame::Frame(std::string frameData) {
+  setData(frameData);
+  frameType = DATA;
+  seq = 0;
+  evenParityBit = calculateEvenParity();
+}
+
 Frame::Frame(std::string frameData, FrameType ft, char sequence, bool evenParity)
   : frameType{ft}, seq{sequence}, evenParityBit{evenParity} {
   setData(frameData);
