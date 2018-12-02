@@ -7,32 +7,45 @@
 #include "PacketBuilder.h"
 #include "Frame.h"
 
+std::vector<std::string> emulateSend(std::string filename) {
+  std::vector<std::string> output;
+
+  std::vector<Packet> sendPackets =
+    Packet::PacketBuilder::getPacketsFromFile(filename);
+
+  std::vector<Frame> frames;
+  for (int i = 0; i < sendPackets.size(); i++)
+    for (int j = 0; j < sendPackets[i].getFrames().size(); j++)
+      output.push_back(sendPackets[i].getFrames()[j].serialize());
+
+  return output;
+}
+
+std::vector<Packet> emulateReceive(std::vector<std::string> input) {
+  Packet::PacketBuilder p;
+  std::vector<Packet> receivedPackets;
+  for (int i = 0; i < input.size(); i++) {
+    Frame f = Frame::deserialize(input[i]);
+    p.addFrame(f);
+    if (f.containsNewLine()) {
+      receivedPackets.push_back(p.build());
+      p = Packet::PacketBuilder();
+    }
+  }
+
+  return receivedPackets;
+}
+
 int main() {
   try {
-    // Get packets from file & "send"
-    std::string file = "C:\\dev\\Networking-Protocols\\docs\\shunned_house.txt"; //replace with whatever
-    std::vector<Packet> sendPackets =
-      Packet::PacketBuilder::getPacketsFromFile(file);
+    std::vector<std::string> sent =
+      emulateSend("C:\\dev\\Networking-Protocols\\docs\\shunned_house.txt");
+    sent.push_back(Frame::createACK(1).serialize());
 
-    std::vector<Frame> frames;
-    for (int i = 0; i < sendPackets.size(); i++)
-      for (int j = 0; j < sendPackets[i].getFrames().size(); j++)
-        frames.push_back(sendPackets[i].getFrames()[j]);
+    std::vector<Packet> received = emulateReceive(sent);
 
-    //"Receive" the frames & output packets
-    Packet::PacketBuilder p;
-    std::vector<Packet> receivedPackets;
-    for (int i = 0; i < frames.size(); i++) {
-      //std::cout << frames[i].getData() << "\n";
-      p.addFrame(frames[i]);
-      if (frames[i].containsNewLine()) {
-        receivedPackets.push_back(p.build());
-        p = Packet::PacketBuilder();
-      }
-    }
-
-    for ( int i = 0; i < receivedPackets.size(); i++)
-      std::cout << receivedPackets[i].getData();
+    for (int i = 0; i < received.size(); i++)
+      std::cout << received[i].getData();
 
   }
   catch (std::runtime_error) {

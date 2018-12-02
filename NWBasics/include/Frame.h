@@ -56,6 +56,20 @@ class Frame {
   static Frame deserialize(std::string serial);
 
   /**
+  * Creates an ACK frame for the given sequence number.
+  * @param sequence: The sequence number to ACK.
+  * @return Returns an ACK frame.
+  */
+  static Frame createACK(char sequence);
+
+  /**
+  * Creates an NAK frame for the given sequence number.
+  * @param sequence: The sequence number to NAK.
+  * @return Returns an NAK frame.
+  */
+  static Frame createNAK(char sequence);
+
+  /**
   * Serializes the Frame.
   * @return Returns the Frame as a string.
   */

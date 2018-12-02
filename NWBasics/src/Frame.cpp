@@ -25,6 +25,20 @@ Frame::Frame(std::string frameData, FrameType ft, char sequence, bool evenParity
   setData(frameData);
 }
 
+Frame Frame::createACK(char sequence) {
+  Frame f;
+  f.setFrameType(ACK);
+  f.setSeq(sequence);
+  return f;
+}
+
+Frame Frame::createNAK(char sequence) {
+  Frame f;
+  f.setFrameType(NAK);
+  f.setSeq(sequence);
+  return f;
+}
+
 bool Frame::parityIsValid() {
  return evenParityBit == calculateEvenParity();
 }
