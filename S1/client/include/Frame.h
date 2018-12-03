@@ -10,11 +10,6 @@ class Frame {
    */
    static const int MAX_DATA = 64;
 
-   /**
-   * The byte appended to the start & end of a serialized frame.
-   */
-   static const char START_END_BYTE = 0x7E;
-
   /**
   * An enumeration of distinct frame types.
   */
@@ -187,16 +182,6 @@ class Frame {
   * The even-parity bit.
   */
   bool evenParityBit;
-
-  /**
-  * Source address.
-  */
-  int sourceAddr;
-
-  /**
-  * Destination address.
-  */
-  int destAddr;
 
   /**
   * The frame's data.
