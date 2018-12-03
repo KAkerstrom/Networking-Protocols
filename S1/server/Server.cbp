@@ -33,9 +33,16 @@
 		<Compiler>
 			<Add option="-Wall" />
 		</Compiler>
+		<Unit filename="include/Exceptions.h" />
+		<Unit filename="include/Frame.h" />
+		<Unit filename="include/Packet.h" />
+		<Unit filename="include/PacketBuilder.h" />
 		<Unit filename="include/ServerSocket.h" />
 		<Unit filename="include/Socket.h" />
 		<Unit filename="include/SocketException.h" />
+		<Unit filename="src/Frame.cpp" />
+		<Unit filename="src/Packet.cpp" />
+		<Unit filename="src/PacketBuilder.cpp" />
 		<Unit filename="src/ServerSocket.cpp" />
 		<Unit filename="src/Socket.cpp" />
 		<Unit filename="src/server.cpp" />
