@@ -37,9 +37,9 @@ std::vector<Packet> emulateReceive(std::vector<std::string> input) {
 }
 
 int main() {
-  try {
+  //try {
     std::vector<std::string> sent =
-      emulateSend("C:\\dev\\Networking-Protocols\\docs\\shunned_house.txt");
+      emulateSend("shunned_house.txt");
     sent.push_back(Frame::createACK(1).serialize());
 
     std::vector<Packet> received = emulateReceive(sent);
@@ -47,9 +47,9 @@ int main() {
     for (int i = 0; i < received.size(); i++)
       std::cout << received[i].getData();
 
-  }
-  catch (std::runtime_error) {
-    std::cout << "There was a problem...\n";
-  }
+//  }
+//  catch (std::runtime_error& e) {
+//    std::cout << "There was a problem...\n";
+//  }
   return 0;
 }

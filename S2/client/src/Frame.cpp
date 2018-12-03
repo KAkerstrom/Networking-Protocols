@@ -64,18 +64,18 @@ Frame Frame::deserialize(std::string serial) {
   if (serial.length() < 3)
     throw deserialization_error("Serial string too short (<3 characters)");
 
-  f.setSeq(serial[0]);
-  f.setFrameType((Frame::FrameType)serial[1]);
-  f.setEvenParity(serial[2]);
+  f.setSeq(serial[0] - '0');
+  f.setFrameType((Frame::FrameType)(serial[1] - '0'));
+  f.setEvenParity(serial[2] - '0');
   f.setData(serial.substr(3));
   return f;
 }
 
 std::string Frame::serialize() {
   std::string chars;
-  chars.push_back(getSeq());
-  chars.push_back((char)getFrameType());
-  chars.push_back(getEvenParity());
+  chars += getSeq() + '0';
+  chars += (((char)getFrameType()) + '0');
+  chars += getEvenParity() + '0';
   chars += getData();
   return chars;
 }
