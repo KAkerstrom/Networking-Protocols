@@ -11,14 +11,11 @@ std::string sendMsg(std::string message, std::string hostName, int port)
     {
         ClientSocket client_socket(hostName, port);
 
-//        try
-//        {
-        client_socket << message;
+        Frame f(message);
+
+        client_socket << (f.serialize());
         client_socket >> reply;
-//        }
-//        catch(SocketException&)
-//        {
-//        }
+
         reply = "We received this response from the server:\n\"" + reply + "\"\n";
     }
     catch(SocketException& e)
