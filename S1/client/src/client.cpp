@@ -1,7 +1,9 @@
-#include "ClientSocket.h"
-#include "SocketException.h"
 #include <iostream>
 #include <string>
+#include "ClientSocket.h"
+#include "SocketException.h"
+#include "Frame.h"
+#include "Packet.h"
 
 // Send "message" to hostName at port
 std::string sendMsg(std::string message, std::string hostName, int port)
