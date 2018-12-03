@@ -31,15 +31,21 @@ int main()
                     {
 
                         Frame initialFrame;
-//                        do
-//                        {
+                        do
+                        {
                             std::string data;
                             new_sock >> data;
-                            initialFrame = Frame::deserialize(data);
-//                        }
-//                        while (initialFrame.getData() != "shunned_house.txt");
+                            std::cout << data << "\n";
+                            if(data != "")
+                             initialFrame = Frame::deserialize(data);
 
-                        std::string filepath = "../../docs/shunned_house.txt";
+                            if(initialFrame.getData() != "shunned_house.txt")
+                              new_sock << "Not-Proper-Text-File";
+                        }
+                        while (initialFrame.getData() != "shunned_house.txt");
+
+                        //std::string filepath = "../../docs/shunned_house.txt";
+                        std::string filepath = "shunned_house.txt";
                         std::vector<Packet> packets = Packet::PacketBuilder::getPacketsFromFile(filepath);
 
                         for (int p = 0; p < packets.size(); p++)
@@ -50,13 +56,18 @@ int main()
                             for (int f = 0; f < packets[p].getFrames().size(); f++)
                                 do
                                 {
-                                    new_sock << (frames[f].serialize());
-                                    std::string data;
-                                    new_sock >> data;
-                                    response = Frame::deserialize(data);
+                                  std::string tmp = frames[f].serialize();
+                                  std::cout << "Sending " << tmp << "\n";
+                                    new_sock << tmp;
+                                    //std::string data;
+                                    //new_sock >> data;
+                                    //response = Frame::deserialize(data);
+
                                 }
                                 while (response.getFrameType() == Frame::NAK);
                         }
+                        Frame lastFrame("/ENDOFFILE");
+                        new_sock << (lastFrame.serialize());
                     }
                     catch (file_io_error)
                     {
