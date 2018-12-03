@@ -11,7 +11,7 @@ INCLUDE = -I ${SRC_INCLUDE}
 
 CLIENT_TEST = Client
 
-all : $(CLIENT_TEST)
+all : clean $(CLIENT_TEST)
 
 $(CLIENT_TEST): $(SRC_DIR)
 	$(CXX) $(CXXFLAGS) -o $(CLIENT_TEST) $(INCLUDE) \

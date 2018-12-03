@@ -1,3 +1,4 @@
+#include <stdlib.h>
 #include <iostream>
 #include <string>
 #include "ClientSocket.h"
@@ -43,8 +44,14 @@ int main()
 
     while(true)
     {
-        std::cin >> input;
-        Frame f(input);
+        std::cout << "Press Enter to Continue...";
+        char temp;
+        std::cin.clear();
+        std::cin.get(temp);
+        std::cin.ignore(100, '\n');
+
+
+        Frame f("shunned_house.txt");
         std::string reply;
         try
         {
@@ -54,11 +61,28 @@ int main()
             do
             {
                 client_socket >> reply;
-                reply = Frame::deserialize(reply).getData();
+                Frame f = Frame::deserialize(reply);
+                reply = f.getData();
 
-                std::cout << reply;
+                if(f.parityIsValid())
+                {
+                    Frame ack = Frame::createACK(0);
+                    client_socket << (ack.serialize());
+
+                    if(reply != "/ENDOFFILE")
+                        std::cout << reply;
+                }
+                else
+                {
+                    Frame nak = Frame::createNAK(0);
+                    client_socket << (nak.serialize());
+                }
+
+
             }
             while(reply != "/ENDOFFILE");
+            //std::cout << "\nOutside do loop\n";
+
         }
         catch(SocketException& e)
         {

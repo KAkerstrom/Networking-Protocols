@@ -25,8 +25,8 @@ int main()
             // with the client.
             try
             {
-                while (true)
-                {
+                //while (true)
+                //{
                     try
                     {
 
@@ -36,13 +36,22 @@ int main()
                             std::string data;
                             new_sock >> data;
                             std::cout << data << "\n";
+
+
                             if(data != "")
                              initialFrame = Frame::deserialize(data);
 
                             if(initialFrame.getData() != "shunned_house.txt")
-                              new_sock << "Not-Proper-Text-File";
+                            {
+                               Frame f("Not-Proper-Text-File");
+                               new_sock << (f.serialize());
+                               Frame lastFrame("/ENDOFFILE");
+                               new_sock << (lastFrame.serialize());
+                            }
+
                         }
                         while (initialFrame.getData() != "shunned_house.txt");
+                        std::cout << "\nOutside do loop\n";
 
                         //std::string filepath = "../../docs/shunned_house.txt";
                         std::string filepath = "shunned_house.txt";
@@ -59,10 +68,9 @@ int main()
                                   std::string tmp = frames[f].serialize();
                                   std::cout << "Sending " << tmp << "\n";
                                     new_sock << tmp;
-                                    //std::string data;
-                                    //new_sock >> data;
-                                    //response = Frame::deserialize(data);
-
+                                    std::string data;
+                                    new_sock >> data;
+                                    response = Frame::deserialize(data);
                                 }
                                 while (response.getFrameType() == Frame::NAK);
                         }
@@ -75,9 +83,12 @@ int main()
                         return 0;
                     }
 
-                }
+                //}
             }
-            catch(SocketException&) {}
+            catch(SocketException& e) {
+            std::cout << "Exception was caught:" << e.description() << "\n";
+            }
+
         }
     }
     catch (SocketException& e)

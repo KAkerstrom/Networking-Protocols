@@ -12,7 +12,7 @@ INCLUDE = -I ${SRC_INCLUDE}
 SERVER_TEST = Server
 
 .PHONY: all
-all : $(SERVER_TEST)
+all : clean $(SERVER_TEST)
 
 # default rule for compiling .cc to .o
 %.o: %.cpp
