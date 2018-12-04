@@ -6,9 +6,11 @@
 #include "Exceptions.h"
 #include "Frame.h"
 #include "PacketBuilder.h"
+#include <stdlib.h>
 
 int main()
 {
+    srand(1);
     std::cout << "running....\n";
     try
     {
@@ -91,7 +93,14 @@ int main()
                         for (int f = 0; f < packets[p].getFrames().size(); f++)
                             do
                             {
-                                std::string tmp = frames[f].serialize();
+                              Frame toSend = frames[f];
+                                //Mess up the parity maybe
+                                if(rand() % 5 == 0){
+                                  toSend.setEvenParity(!toSend.getEvenParity());
+                                  std::cout << "!!!Flipping_parity!!!\n";
+                                }
+
+                                std::string tmp = toSend.serialize();
                                 std::cout << "Sending " << tmp << "\n";
                                 new_sock << tmp;
                                 std::string data;
