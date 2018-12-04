@@ -13,6 +13,7 @@
 				<Option compiler="gcc" />
 				<Compiler>
 					<Add option="-g" />
+					<Add directory="include" />
 				</Compiler>
 			</Target>
 			<Target title="Release">
@@ -22,6 +23,7 @@
 				<Option compiler="gcc" />
 				<Compiler>
 					<Add option="-O2" />
+					<Add directory="include" />
 				</Compiler>
 				<Linker>
 					<Add option="-s" />
@@ -32,18 +34,23 @@
 			<Add option="-Wall" />
 		</Compiler>
 		<Unit filename="include/ClientSocket.h" />
-		<Unit filename="include/ServerSocket.h" />
+		<Unit filename="include/Exceptions.h" />
+		<Unit filename="include/Frame.h" />
+		<Unit filename="include/Packet.h" />
+		<Unit filename="include/PacketBuilder.h" />
 		<Unit filename="include/Socket.h" />
 		<Unit filename="include/SocketException.h" />
 		<Unit filename="src/ClientSocket.cpp" />
-		<Unit filename="src/ServerSocket.cpp" />
+		<Unit filename="src/Frame.cpp" />
+		<Unit filename="src/Packet.cpp" />
+		<Unit filename="src/PacketBuilder.cpp" />
 		<Unit filename="src/Socket.cpp" />
 		<Unit filename="src/client.cpp" />
 		<Extensions>
 			<code_completion />
 			<envvars />
-			<debugger />
 			<lib_finder disable_auto="1" />
+			<debugger />
 		</Extensions>
 	</Project>
 </CodeBlocks_project_file>

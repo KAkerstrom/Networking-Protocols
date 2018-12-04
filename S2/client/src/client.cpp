@@ -1,26 +1,94 @@
-#include "ClientSocket.h"
-#include "SocketException.h"
+#include <stdlib.h>
 #include <iostream>
 #include <string>
+#include "ClientSocket.h"
+#include "SocketException.h"
+#include "Frame.h"
+#include "Packet.h"
 
-int main(int argc, int argv[]) {
-  try {
-    // Replace "localhost" with the hostname
-    // that you're running your server.
-    ClientSocket client_socket("localhost", 30000);
-    std::string reply;
-    // Usually in real applications, the following
-    // will be put into a loop.
-    try {
-      client_socket << "Test message.";
-      client_socket >> reply;
+// Send "message" to hostName at port
+//std::string sendMsg(std::string message, std::string hostName, int port)
+//{
+//    std::string reply;
+//    try
+//    {
+//        ClientSocket client_socket(hostName, port);
+//
+//        Frame f(message);
+//
+//        client_socket << (f.serialize());
+//        client_socket >> reply;
+//
+//        //reply = "We received this response from the server:\n\"" + reply + "\"\n";
+//    }
+//    catch(SocketException& e)
+//    {
+//        reply = "Exception was caught:" + e.description() + "\n";
+//    }
+//
+//    return reply;
+//}
+
+int main()
+{
+    std::string input;
+    std::string output;
+    std::string serverName = "localhost";
+    int port = 3536;
+
+    // TODO: Input validation or just remove inputs all together.
+    std::cout << "Please enter the hostname or IP of your server. \n";
+    std::cin >> serverName;
+
+    std::cout << "Server = " << serverName << ":" << port << "\n";
+
+    while(true)
+    {
+        std::cout << "Enter filename: ";
+        std::cin >> input;
+
+
+        Frame f(input);
+        std::string reply;
+        try
+        {
+            ClientSocket client_socket(serverName, port);
+            client_socket << (f.serialize());
+
+            do
+            {
+                client_socket >> reply;
+                Frame f = Frame::deserialize(reply);
+                reply = f.getData();
+
+                if(f.parityIsValid())
+                {
+                    Frame ack = Frame::createACK(0);
+                    client_socket << (ack.serialize());
+
+                    if(reply != "/ENDOFFILE")
+                        std::cout << reply;
+                }
+                else
+                {
+                    Frame nak = Frame::createNAK(0);
+                    client_socket << (nak.serialize());
+                }
+
+
+            }
+            while(reply != "/ENDOFFILE");
+            //std::cout << "\nOutside do loop\n";
+
+        }
+        catch(SocketException& e)
+        {
+            reply = "Exception was caught:" + e.description() + "\n";
+        }
+
+
     }
-    catch(SocketException&){}
-    std::cout << "We received this response from the server:\n\"" << reply << "\"\n";;
-  }
-  catch(SocketException& e){
-    std::cout << "Exception was caught:" << e.description() << "\n";
-  }
 
-  return 0;
+
+    return 0;
 }

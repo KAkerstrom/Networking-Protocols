@@ -1,26 +1,31 @@
 # Makefile for the socket programming tutorial 
 #
 
-server = ServerSocket.o Socket.o server.o ServerSocket.h Socket.h SocketException.h
-client = ClientSocket.o Socket.o client.o ServerSocket.h Socket.h SocketException.h
+CXX=g++
+CXXFLAGS= -std=c++0x -g -fprofile-arcs -ftest-coverage
 
+SRC_DIR = src
 
-all : server client
+SRC_INCLUDE = include
+INCLUDE = -I ${SRC_INCLUDE}
 
-server: $(server)
-	g++ -o server $(server)
+SERVER_TEST = Server
 
+.PHONY: all
+all : clean $(SERVER_TEST)
 
-client: $(client)
-	g++ -o client $(client)
+# default rule for compiling .cc to .o
+%.o: %.cpp
+	$(CXX) $(CXXFLAGS) -c $< -o $@
 
+.PHONY: clean
 
-Socket: Socket.cpp 
-ServerSocket: ServerSocket.cpp 
-ClientSocket: ClientSocket.cpp
-server: server.cpp
-client: client.cpp
+$(SERVER_TEST): $(SRC_DIR) $(SRC_DIR)
+	$(CXX) $(CXXFLAGS) -o $(SERVER_TEST) $(INCLUDE) \
+	$(SRC_DIR)/*.cpp
 
+test: $(SERVER_TEST)
+	$(SERVER_TEST)
 
 clean:
-	rm -f *.o simple_server simple_client
+	rm Server -rf *~ $(SRC)/*.o $(TEST_SRC)/*.o *.gcov *.gcda *.gcno \ #rm -f *.o simple_server simple_client
