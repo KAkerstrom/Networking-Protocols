@@ -51,7 +51,7 @@ int main()
         std::cin.ignore(100, '\n');
 
 
-        Frame f("shunned_house.txt");
+        Frame f("FIRSTFRAME");
         std::string reply;
         try
         {

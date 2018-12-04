@@ -11,16 +11,15 @@
 
 void* serve(void* sock) {
   ServerSocket new_sock = *((ServerSocket*)sock);
+
   try {
     try {
-
       Frame initialFrame;
       bool exists = false;
       do {
         std::string data;
         new_sock >> data;
         std::cout << data << "\n";
-
 
         if(data != "")
           initialFrame = Frame::deserialize(data);
@@ -56,7 +55,9 @@ void* serve(void* sock) {
       } while (!exists);
 
       std::string filepath = "docs/" + initialFrame.getData();
+
       std::vector<Packet> packets = Packet::PacketBuilder::getPacketsFromFile(filepath);
+
       for (int p = 0; p < packets.size(); p++) {
         std::vector<Frame> frames = packets[p].getFrames();
         Frame response;
@@ -84,8 +85,6 @@ void* serve(void* sock) {
       std::cout << "Could not read file.\nExiting.\n";
       return 0;
     }
-
-    //}
   } catch(SocketException& e) {
     std::cout << "Exception was caught:" << e.description() << "\n";
   }
