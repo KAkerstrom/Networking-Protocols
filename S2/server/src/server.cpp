@@ -39,7 +39,7 @@ void* serve(void* sock) {
         if(!exists) {
           std::string data;
           Frame clientResponse;
-          Frame f("Not-Proper-Text-File\n");
+          Frame f("File Not Found.\n");
           new_sock << (f.serialize());
 
 
@@ -108,6 +108,9 @@ int main() {
         std::cout << "Error creating new thread. Return code: " << returnVal << ".\n";
       else
         threads.push_back(newThread);
+
+      for (int i = 0; i < threads.size(); i++)
+        pthread_join(threads[i], NULL);
     }
   } catch (SocketException& e) {
     std::cout << "Exception was caught:" << e.description() << "\nExiting.\n";
