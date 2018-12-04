@@ -93,11 +93,12 @@ int main()
                         for (int f = 0; f < packets[p].getFrames().size(); f++)
                             do
                             {
-                              Frame toSend = frames[f];
+                                Frame toSend = frames[f];
                                 //Mess up the parity maybe
-                                if(rand() % 5 == 0){
-                                  toSend.setEvenParity(!toSend.getEvenParity());
-                                  std::cout << "!!!Flipping_parity!!!\n";
+                                if(rand() % 5 == 0)
+                                {
+                                    toSend.setEvenParity(!toSend.getEvenParity());
+                                    std::cout << "!!!Flipping_parity!!!\n";
                                 }
 
                                 std::string tmp = toSend.serialize();

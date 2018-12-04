@@ -6,90 +6,66 @@
 #include "Frame.h"
 #include "Packet.h"
 
-// Send "message" to hostName at port
-//std::string sendMsg(std::string message, std::string hostName, int port)
-//{
-//    std::string reply;
-//    try
-//    {
-//        ClientSocket client_socket(hostName, port);
-//
-//        Frame f(message);
-//
-//        client_socket << (f.serialize());
-//        client_socket >> reply;
-//
-//        //reply = "We received this response from the server:\n\"" + reply + "\"\n";
-//    }
-//    catch(SocketException& e)
-//    {
-//        reply = "Exception was caught:" + e.description() + "\n";
-//    }
-//
-//    return reply;
-//}
-
 int main()
 {
     std::string input;
     std::string output;
     std::string serverName = "localhost";
     int port = 3536;
-
-    // TODO: Input validation or just remove inputs all together.
-    std::cout << "Please enter the hostname or IP of your server. \n";
-    std::cin >> serverName;
-
-    std::cout << "Server = " << serverName << ":" << port << "\n";
-
     while(true)
     {
-        std::cout << "Enter filename: ";
-        std::cin >> input;
+        // TODO: Input validation or just remove inputs all together.
+        std::cout << "Please enter the hostname or IP of your server. \n";
+        std::cin >> serverName;
 
+        std::cout << "Server = " << serverName << ":" << port << "\n";
 
-        Frame f(input);
-        std::string reply;
-        try
+        while(true)
         {
-            ClientSocket client_socket(serverName, port);
-            client_socket << (f.serialize());
-
-            do
+            try
             {
-                client_socket >> reply;
-                Frame f = Frame::deserialize(reply);
-                reply = f.getData();
+                std::cout << "Enter filename: ";
+                std::cin >> input;
+                std::string reply;
 
-                if(f.parityIsValid())
+                ClientSocket client_socket(serverName, port);
+
+                Frame f(input);
+                client_socket << (f.serialize());
+
+                do
                 {
-                    Frame ack = Frame::createACK(0);
-                    client_socket << (ack.serialize());
+                    client_socket >> reply;
+                    Frame f = Frame::deserialize(reply);
+                    reply = f.getData();
 
-                    if(reply != "/ENDOFFILE")
-                        std::cout << reply;
-                }
-                else
-                {
-                    //std::cout << "\nIncorrect_parity\n";
-                    Frame nak = Frame::createNAK(0);
-                    client_socket << (nak.serialize());
-                }
+                    if(f.parityIsValid())
+                    {
+                        Frame ack = Frame::createACK(0);
+                        client_socket << (ack.serialize());
 
+                        if(reply != "/ENDOFFILE")
+                            std::cout << reply;
+                    }
+                    else
+                    {
+                        //std::cout << "\nIncorrect_parity\n";
+                        Frame nak = Frame::createNAK(0);
+                        client_socket << (nak.serialize());
+                    }
+
+
+                }
+                while(reply != "/ENDOFFILE");
+                //std::cout << "\nOutside do loop\n";
 
             }
-            while(reply != "/ENDOFFILE");
-            //std::cout << "\nOutside do loop\n";
-
+            catch(SocketException& e)
+            {
+                std::cout << "Exception was caught: " << e.description() << "\n";
+                break;
+            }
         }
-        catch(SocketException& e)
-        {
-            reply = "Exception was caught:" + e.description() + "\n";
-        }
-
-
     }
-
-
     return 0;
 }
