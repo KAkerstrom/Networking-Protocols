@@ -71,6 +71,7 @@ int main()
                 }
                 else
                 {
+                    //std::cout << "\nIncorrect_parity\n";
                     Frame nak = Frame::createNAK(0);
                     client_socket << (nak.serialize());
                 }
