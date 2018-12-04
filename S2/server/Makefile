@@ -21,7 +21,7 @@ all : clean $(SERVER_TEST)
 .PHONY: clean
 
 $(SERVER_TEST): $(SRC_DIR) $(SRC_DIR)
-	$(CXX) $(CXXFLAGS) -o $(SERVER_TEST) $(INCLUDE) \
+	$(CXX) $(CXXFLAGS) -pthread -o $(SERVER_TEST) $(INCLUDE) \
 	$(SRC_DIR)/*.cpp
 
 test: $(SERVER_TEST)
